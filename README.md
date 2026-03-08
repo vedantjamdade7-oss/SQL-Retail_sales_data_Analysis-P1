@@ -123,7 +123,7 @@ FROM retail_sales;
 ```
 
 ### Number of unique customers
-How many unique customer we have?
+How many unique customer we have
 ```sql
 SELECT COUNT(DISTINCT customer_id)
 FROM retail_sales;
