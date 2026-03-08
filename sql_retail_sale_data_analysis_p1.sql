@@ -38,7 +38,7 @@ SUM(CASE WHEN price_per_unit IS NULL THEN 1 ELSE 0 END) AS price_per_unit,
 SUM(CASE WHEN cogs IS NULL THEN 1 ELSE 0 END) AS cogs,
 SUM(CASE WHEN total_sale IS NULL THEN 1 ELSE 0 END) AS total_sale
 FROM retail_sales;
--- There no null value in our dataset, so we can proccess our data for analysis.
+-- There is no null value in our dataset, so we can proccess our data for analysis.
  
 -- If we have any null value in our dataset, we can handle it by using the following query
 
