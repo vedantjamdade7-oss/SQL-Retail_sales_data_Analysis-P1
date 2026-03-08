@@ -90,6 +90,7 @@ Tasks performed:
 Example query used:
 
 ```sql
+SELECT
 SUM(CASE WHEN transactions_id IS NULL THEN 1 ELSE 0 END) AS transactions_id,
 SUM(CASE WHEN sale_date IS NULL THEN 1 ELSE 0 END) AS sale_date,
 SUM(CASE WHEN customer_id IS NULL THEN 1 ELSE 0 END) AS customer_id,
