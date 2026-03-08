@@ -90,10 +90,16 @@ Tasks performed:
 Example query used:
 
 ```sql
-SELECT 
 SUM(CASE WHEN transactions_id IS NULL THEN 1 ELSE 0 END) AS transactions_id,
 SUM(CASE WHEN sale_date IS NULL THEN 1 ELSE 0 END) AS sale_date,
-SUM(CASE WHEN customer_id IS NULL THEN 1 ELSE 0 END) AS customer_id
+SUM(CASE WHEN customer_id IS NULL THEN 1 ELSE 0 END) AS customer_id,
+SUM(CASE WHEN gender IS NULL THEN 1 ELSE 0 END) AS gender,
+SUM(CASE WHEN age IS NULL THEN 1 ELSE 0 END) AS age,
+SUM(CASE WHEN category IS NULL THEN 1 ELSE 0 END) AS category,
+SUM(CASE WHEN quantiy IS NULL THEN 1 ELSE 0 END) AS quantiy,
+SUM(CASE WHEN price_per_unit IS NULL THEN 1 ELSE 0 END) AS price_per_unit,
+SUM(CASE WHEN cogs IS NULL THEN 1 ELSE 0 END) AS cogs,
+SUM(CASE WHEN total_sale IS NULL THEN 1 ELSE 0 END) AS total_sale
 FROM retail_sales;
 ```
 
@@ -109,6 +115,7 @@ Initial analysis was performed to understand the dataset.
 Examples:
 
 ### Total number of sales
+How many sales we have
 
 ```sql
 SELECT COUNT(*) AS total_sales
@@ -116,16 +123,16 @@ FROM retail_sales;
 ```
 
 ### Number of unique customers
-
+How many unique customer we have?
 ```sql
 SELECT COUNT(DISTINCT customer_id)
 FROM retail_sales;
 ```
 
 ### Product categories available
-
+How many unique category we have
 ```sql
-SELECT DISTINCT category
+SELECT DISTINCT(category)
 FROM retail_sales;
 ```
 
@@ -137,7 +144,7 @@ The following business questions were solved using SQL queries.
 
 ### 1️⃣ Sales on a Specific Date
 
-Retrieve all transactions made on a specific date.
+Write a SQL query to retrieve all columns for sales made on '2022-09-08'
 
 ```sql
 SELECT *
@@ -153,10 +160,10 @@ Find clothing sales with quantity greater than 4 in November 2022.
 
 ```sql
 SELECT transactions_id, category, sale_date,
-SUM(quantiy) AS quantiy
+SUM(quantiy) AS quantiy 
 FROM retail_sales
 WHERE category = 'clothing'
-AND quantiy >= 4
+AND quantiy>=4
 AND sale_date BETWEEN '2022-11-01' AND '2022-11-30'
 GROUP BY transactions_id, category, sale_date;
 ```
@@ -164,6 +171,8 @@ GROUP BY transactions_id, category, sale_date;
 ---
 
 ### 3️⃣ Total Sales by Category
+
+Write a SQL query to calculate the total sales (total_sale) for each category.
 
 ```sql
 SELECT category,
@@ -176,15 +185,19 @@ GROUP BY category;
 
 ### 4️⃣ Average Age of Beauty Customers
 
+Write a SQL query to find the average age of customers who purchased items from the 'Beauty' category.
+
 ```sql
-SELECT AVG(age) AS avg_age
-FROM retail_sales
+SELECT category,
+AVG(age) AS Avg_age FROM retail_sales
 WHERE category = 'Beauty';
 ```
 
 ---
 
 ### 5️⃣ Transactions Greater Than 1000
+
+Write a SQL query to find all transactions where the total_sale is greater than 1000.
 
 ```sql
 SELECT transactions_id,
@@ -198,17 +211,21 @@ ORDER BY total_sale DESC;
 
 ### 6️⃣ Transactions by Gender and Category
 
+Write a SQL query to find the total number of transactions (transaction_id) made by each gender in each category.
+
 ```sql
-SELECT COUNT(transactions_id) AS transactions,
-gender,
-category
+SELECT COUNT(transactions_id) AS transactions_id,
+gender, category
 FROM retail_sales
-GROUP BY gender, category;
+GROUP BY gender, category
+ORDER BY transactions_id DESC;
 ```
 
 ---
 
 ### 7️⃣ Best Selling Month Each Year
+
+Write a SQL query to calculate the average sale for each month. Find out best selling month in each year
 
 Uses **window functions and ranking**.
 
@@ -217,27 +234,24 @@ WITH best_selling_summary AS (
 SELECT MONTH(sale_date) AS month,
 YEAR(sale_date) AS year,
 AVG(total_sale) AS avg_sale,
-RANK() OVER (
-PARTITION BY YEAR(sale_date)
-ORDER BY AVG(total_sale) DESC
-) AS rank_
+RANK() OVER (PARTITION BY YEAR(sale_date) ORDER BY AVG(total_sale) DESC) AS RANK_
 FROM retail_sales
-GROUP BY sale_date
-)
-SELECT *
-FROM best_selling_summary
-WHERE rank_ = 1;
+GROUP BY sale_date)
+SELECT * FROM best_selling_summary
+WHERE RANK_=1;
 ```
 
 ---
 
 ### 8️⃣ Top 5 Customers by Total Sales
 
+ Write a SQL query to find the top 5 customers based on the highest total sales 
+ 
 ```sql
-SELECT customer_id,
+SELECT customer_id AS customers,
 SUM(total_sale) AS total_sale
 FROM retail_sales
-GROUP BY customer_id
+GROUP BY customers
 ORDER BY total_sale DESC
 LIMIT 5;
 ```
@@ -246,8 +260,10 @@ LIMIT 5;
 
 ### 9️⃣ Unique Customers per Category
 
+Write a SQL query to find the number of unique customers who purchased items from each category.
+ 
 ```sql
-SELECT COUNT(DISTINCT customer_id) AS customers,
+SELECT COUNT(DISTINCT(customer_id)) AS customer,
 category
 FROM retail_sales
 GROUP BY category;
@@ -257,20 +273,18 @@ GROUP BY category;
 
 ### 🔟 Sales by Time Shift
 
-Orders were grouped into **Morning, Afternoon, and Evening** shifts.
+Write a SQL query to create each shift and number of orders (Example Morning <=12, Afternoon Between 12 & 17, Evening >17)
 
 ```sql
 WITH hourly_shift AS (
-SELECT *,
+SELECT * ,
 CASE
-WHEN HOUR(sale_time) <= 12 THEN 'Morning'
-WHEN HOUR(sale_time) BETWEEN 12 AND 17 THEN 'Afternoon'
-ELSE 'Evening'
+    WHEN HOUR(sale_time) <= 12 THEN 'Morning'
+    WHEN HOUR(sale_time) BETWEEN 12 AND 17 THEN 'Afternoon'
+    ELSE 'Evening'
 END AS shift
-FROM retail_sales
-)
-SELECT shift,
-COUNT(*) AS total_orders
+FROM retail_sales)
+SELECT shift, COUNT(*) AS total_order
 FROM hourly_shift
 GROUP BY shift;
 ```
