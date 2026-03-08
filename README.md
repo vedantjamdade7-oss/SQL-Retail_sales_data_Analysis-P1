@@ -4,7 +4,7 @@
 
 **Project Title:** Retail Sales Data Analysis
 **Level:** Beginner
-**Tools Used:** SQL (MySQL / PostgreSQL)
+**Tools Used:** SQL (MySQL)
 
 This project demonstrates how SQL can be used to **clean, explore, and analyze retail sales data**. The objective of this project is to practice SQL skills commonly used by **Data Analysts** to extract meaningful insights from transactional data.
 
