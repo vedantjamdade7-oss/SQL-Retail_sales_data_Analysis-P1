@@ -1,6 +1,6 @@
 # 🛒 SQL Retail Sales Data Analysis
 
-## 📌 Project Overvie
+## 📌 Project Overview
 
 **Project Title:** Retail Sales Data Analysis
 **Level:** Beginner
