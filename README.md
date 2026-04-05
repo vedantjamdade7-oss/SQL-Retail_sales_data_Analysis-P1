@@ -1,4 +1,4 @@
-# 🛒 SQL Retail Sales Data Analysi
+# 🛒 SQL Retail Sales Data Analysis
 
 ## 📌 Project Overview
 
